@@ -2,11 +2,14 @@ import { FirebaseApp, initializeApp } from "firebase/app";
 // import { getFirestore } from "firebase/firestore/lite";
 
 import firebaseConfig from "./firebaseConfig";
+import { Firestore, getFirestore } from "firebase/firestore";
 class FirebaseSDK {
   private static _instance: FirebaseSDK;
   public app: FirebaseApp;
+  public firestore: Firestore;
   private constructor() {
     this.app = initializeApp(firebaseConfig);
+    this.firestore = getFirestore(this.app);
   }
 
   public static getInstance(): FirebaseSDK {
