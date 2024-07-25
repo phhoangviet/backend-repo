@@ -1,15 +1,21 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+// import { getFirestore } from "firebase/firestore/lite";
 
 import firebaseConfig from "./firebaseConfig";
+class FirebaseSDK {
+  private static _instance: FirebaseSDK;
+  public app: FirebaseApp;
+  private constructor() {
+    this.app = initializeApp(firebaseConfig);
+  }
 
-const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
-const database = getFirestore(firebaseApp);
-const functions = getFunctions();
-console.log(database);
-if (window.location.hostname === "localhost") {
-  connectFunctionsEmulator(functions, "localhost", 5001);
-  console.log(functions, "func");
+  public static getInstance(): FirebaseSDK {
+    if (this._instance) {
+      return this._instance;
+    }
+
+    this._instance = new FirebaseSDK();
+    return this._instance;
+  }
 }
-export { database, firebaseApp, functions };
+export default FirebaseSDK;
