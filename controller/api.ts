@@ -15,7 +15,7 @@ export const signUp = async (
   const { username, password } = req.body;
   const findUser = await handleFindUser(username);
   if (findUser.existed) {
-    return res.status(200).json({ data: "username existed" });
+    return res.status(200).json({ error: "username existed" });
   }
 
   const hashPass: string = await hash(password, 10);
@@ -29,9 +29,19 @@ export const signIn = async (
 ): Promise<Response<{ code: string; error?: string; data: any }>> => {
   const { username, password } = req.body;
 
+  if (!username) {
+    return res
+      .status(200)
+      .json({ code: 400, error: "Please input your username" });
+  }
+  if (!password) {
+    return res
+      .status(200)
+      .json({ code: 400, error: "Please input your password" });
+  }
   const findUser = await handleFindUser(username);
   if (!findUser.existed) {
-    return res.status(200).json({ data: "Not found username" });
+    return res.status(200).json({ code: 404, error: "Not found username" });
   }
   if (findUser.data) {
     const isPasswordMatching: boolean = await compare(
@@ -42,7 +52,7 @@ export const signIn = async (
       const tokenizer = createToken({ username: findUser.data.username });
       const createCookies = createCookie(tokenizer);
       res.header("Set-Cookie", [createCookies]);
-      res.status(200).json({
+      return res.status(200).json({
         code: 200,
         data: {
           username: findUser.data.username,
@@ -60,7 +70,9 @@ export const getUser = async (
   res: Response
 ): Promise<Response<{ code: string; error?: string; data: any }>> => {
   const { username } = (req as RequestWithUser).user;
-
+  if (!username) {
+    res.status(200).json({ code: 400, error: "Failed to get user." });
+  }
   const findUser = await handleFindUser(username);
   if (findUser.existed && findUser.data?.username) {
     return res

@@ -22,7 +22,6 @@ const AuthMiddleware = async (
 ): Promise<any> => {
   try {
     const validateAuth = await getAuthorization(req);
-    console.log(validateAuth);
     if (validateAuth) {
       const { username } = verify(validateAuth, secretKey) as DataStoredInToken;
       if (username) {
@@ -31,6 +30,8 @@ const AuthMiddleware = async (
       } else {
         return next(new ApiError(401, "Wrong authentication token"));
       }
+    } else {
+      return next(new ApiError(401, "Missing authentication token"));
     }
   } catch (error) {
     return next(new ApiError(401, "Authentication token missing"));
