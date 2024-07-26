@@ -10,13 +10,16 @@ class FirebaseSDK {
   private constructor() {
     this.app = initializeApp(firebaseConfig);
     this.firestore = getFirestore(this.app);
+    console.log(
+      "[Firebase] Connected Firebase Project: " +
+        this.firestore.app.options.projectId
+    );
   }
 
   public static getInstance(): FirebaseSDK {
     if (this._instance) {
       return this._instance;
     }
-
     this._instance = new FirebaseSDK();
     return this._instance;
   }

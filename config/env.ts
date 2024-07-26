@@ -6,6 +6,7 @@ const firebaseMessagingSenderId: string =
   process.env?.firebase_messagingSenderId || "";
 const firebaseAppId: string = process.env?.firebase_appId || "";
 const appPort: number = +(process.env?.port || 8080);
+const secretKey: string = process.env?.SECRET_KEY || "";
 export {
   firebaseApiKey,
   firebaseAuthDomain,
@@ -14,4 +15,5 @@ export {
   firebaseMessagingSenderId,
   firebaseAppId,
   appPort,
+  secretKey,
 };
